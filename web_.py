@@ -1,28 +1,22 @@
-import html
-
 import requests
 from bs4 import BeautifulSoup
-from fake_headers import Headers
 
-HOST = 'https://habr.com/ru/all/'
-headers = Headers(browse='firefox', os='win').generate()
-# определяем список ключевых слов
-KEYWORDS = ['Microsoft', 'Яндекс', 'интеграция', 'python']
+URL = 'https://habr.com/ru/all/'
 
-# Ваш код - <дата> - <заголовок> - <ссылка>.
+headers={'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15'}
+page = requests.get(URL, headers=headers)
+soup = BeautifulSoup(page.content, 'html.parser')
 
-# html = requests.get(HOST).text
-# soup = BeautifulSoup(html, features="lxml")
-# text_ = soup.find(class_="tm-article-snippet__title tm-article-snippet__title_h2")
-# span_ = text_.find('span')
-# text_word1 = span_.text
-# print(text_word1)
-
-habr_main_html = requests.get(HOST).text
-soup = BeautifulSoup(habr_main_html)
-article_list_tag = soup.find(class_="tm-articles-list")
+# print(soup)
+#
+product_title = soup.find(class_='tm-articles-list').get_text()
+# product_price = soup.find(class_='ux-textspans ux-textspans--SECONDARY ux-textspans--BOLD').get_text()
+print(product_title)
+# print(product_price)
 articles_tags = article_list_tag.find_all('article') #ищем теги артикл=списки статей
 for article in articles_tags:
-    article_time = article.find('time')
-    link_tag = article.find('a', class_='tm-article-snippet__title-link') # заголовок ищем
-
+    article_time = article.find('time')['title']
+    link_tag = article.find('a', class_='tm-article-snippet__title-link')
+    link = link_tag['href']
+    span_tag = link_tag.find('span')
+    title = span_tag.text
