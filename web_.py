@@ -45,3 +45,19 @@ for article in article_tags:
         'link': link
     })
 print(article_list_tag)
+
+
+import requests
+from bs4 import BeautifulSoup
+# from fake_headers import Headers # импортировать
+from pprint import pprint
+
+URL = 'https://spb.hh.ru/search/vacancy?text=python&area=1&area=2'
+
+
+hh_main_html = requests.get(URL).text
+soup = BeautifulSoup(hh_main_html, features='lxml')
+# print(soup)
+# article_list_tag = soup.find(class_='vacancy-serp-content') #нашли тег в которых лежат все статьи
+vacancy = 'https://spb.hh.ru/search/vacancy?text=python&area=1&area=2' + soup.find('div', class_='serp-item').find('a', class_='serp-item__title').get('href')
+print(link)
