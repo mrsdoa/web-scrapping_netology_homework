@@ -61,3 +61,16 @@ soup = BeautifulSoup(hh_main_html, features='lxml')
 # article_list_tag = soup.find(class_='vacancy-serp-content') #нашли тег в которых лежат все статьи
 vacancy = 'https://spb.hh.ru/search/vacancy?text=python&area=1&area=2' + soup.find('div', class_='serp-item').find('a', class_='serp-item__title').get('href')
 print(link)
+
+
+import requests
+from bs4 import BeautifulSoup
+
+url = 'https://spb.hh.ru/search/vacancy?text=python&area=1&area=2'
+
+headers={'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41'}
+
+page = requests.get(url, headers=headers)
+soup = BeautifulSoup(page.content, 'html.parser')
+print(soup.prettify)
+
