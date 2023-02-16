@@ -60,3 +60,45 @@ if __name__=="__main__":
     for a in get_links("python"):
         print(get_resume(a))
         time.sleep(1)
+        
+        
+        
+        
+import requests
+from bs4 import BeautifulSoup
+
+# в описании вакансии "Django" и "Flask"
+
+url = 'https://spb.hh.ru/search/vacancy?text=django%2C+flask&salary=&area=1&area=2&ored_clusters=true'
+
+headers={'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41'}
+
+page = requests.get(url, headers=headers)
+soup = BeautifulSoup(page.content, 'html.parser')
+# print(soup.prettify)
+
+article_list_tag = soup.find(class_='vacancy-serp-content') #or vacancy-serp__results
+article_tags = article_list_tag.find_all('div', class_='serp-item')
+
+# делаем список, в который будем складывать данные
+articles = []
+
+# ссылка, вилка зп, название компании, город
+# делаем цикл с помощью которого будем ходить по статьям
+for article in article_tags:
+    link_tag = article.find('a', class_='bloko-button bloko-button_kind-primary bloko-button_scale-small')
+    link_relative = link_tag['href']  # ссылка тут относительная
+    link = f'https://spb.hh.ru/{link_relative}'
+    salary_tag = article.find('div', class_='bloko-header-3')
+    # span_salary = salary_tag.find('span', class_='bloko-header-section-3')
+    company_name_tag = article.find('div', class_='vacancy-serp-item__meta-info-company')
+    company_name = company_name_tag.find('href')
+    # name = company_name.text
+    location_tag = article.find('div', class_='bloko-text')
+    articles.append({
+        'link': link,
+        # 'salary': span_salary,
+        # 'company': name,
+        'location': location_tag
+    })
+print(articles)
